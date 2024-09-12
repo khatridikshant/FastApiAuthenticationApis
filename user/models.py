@@ -9,3 +9,4 @@ class UserModel(Base):
     email = Column(String(250), unique=True, index=True)
     password = Column(String(100))
 
+
