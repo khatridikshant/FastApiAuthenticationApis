@@ -7,3 +7,4 @@ _router = router.APIRouter(prefix="/users", tags=["User"],responses={404: {"desc
 
 @_router.post("",status_code=status.HTTP_201_CREATED)
 async def create_user(data: CreateUserRequest, db:Session = Depends(get_db)):
+    pass
