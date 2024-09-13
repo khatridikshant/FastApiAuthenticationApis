@@ -1,6 +1,6 @@
 import fastapi.routing as router
 from fastapi.responses import JSONResponse
-from fastapi import status,Depends
+from fastapi import HTTPException, status,Depends
 from sqlalchemy.orm import Session
 from db import get_db
 from user.models import UserModel
@@ -14,3 +14,13 @@ async def create_user(data: CreateUserRequest, db:Session = Depends(get_db)):
     await create_user_account(data = data, db = db)
     payload = "User Account Has Been Successfully Created"
     return JSONResponse(content=payload)
+
+@_router.get("/get/{id}")
+async def get_users(id: int, db:Session = Depends(get_db)):
+    db_item = db.query(UserModel).filter(UserModel.id == id).first()
+    if db_item is None:
+        raise HTTPException(status_code = 404, detail = "Item Not Found")
+    return db_item
+    
+
+
