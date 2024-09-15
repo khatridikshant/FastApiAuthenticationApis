@@ -42,6 +42,10 @@ async def create_refresh_token(data: dict):
     return jwt.encode(data,secret_key,["HS256"])
 
 def get_user_token(user: UserModel, refresh_token = None):
-    payload = {"id": user.id, "time": 0}
+    payload = {"id": user.id, "timeNow": datetime.datetime.now()}
+    access_token = create_access_token(payload,datetime.timedelta(minutes=10))
+    if not refresh_token:
+        refresh_token = create_refresh_token(payload)
+    return ''
 
 
