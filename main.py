@@ -6,6 +6,7 @@ import starlette.middleware.authentication
 import auth.route
 from security import JWTAuth
 from user.routes import _router as user_router
+from user.routes import _userrouter as _userrouter
 import db
 from user.models import UserModel
 import auth
@@ -18,6 +19,7 @@ app = FastAPI()
 db.Base.metadata.create_all(bind=db.engine)
 app.include_router(user_router)
 app.include_router(auth.route.router)
+app.include_router(_userrouter)
 app.add_middleware(starlette.middleware.authentication.AuthenticationMiddleware, backend = JWTAuth())
 
 

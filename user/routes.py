@@ -7,9 +7,11 @@ from user.models import UserModel
 from user.schemas import CreateUserRequest
 from user.services import create_user_account
 from starlette.middleware.authentication import AuthenticationMiddleware
+import security
+
 
 _router = router.APIRouter(prefix="/users", tags=["User"],responses={404: {"description" : "Not Found"}})
-_userrouter = router.APIRouter(prefix="/users", tags=["User"],responses={404: {"description" : "Not Found"}})
+_userrouter = router.APIRouter(prefix="/users", tags=["User"],responses={404: {"description" : "Not Found"}}, dependencies= [Depends(security.oauth2_scheme)])
 
 @_router.post("")
 async def create_user(data: CreateUserRequest, db:Session = Depends(get_db)):
@@ -26,7 +28,7 @@ async def get_users(id: int, db:Session = Depends(get_db)):
 
 
 
-@_router.post("/account", status_code = status.HTTP_200_OK)
+@_userrouter.post("/account", status_code = status.HTTP_200_OK)
 def get_user_details(request: Request):
     return request.user
 
