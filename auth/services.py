@@ -7,7 +7,8 @@ from user.models import UserModel
 from fastapi.security import OAuth2PasswordRequestForm
 import security
 import datetime
-
+import jwt
+import samplejwtkeygenerator
 
 
 async def get_token(data: OAuth2PasswordRequestForm, db: sqlalchemy.orm.Session ):
@@ -20,6 +21,22 @@ async def get_token(data: OAuth2PasswordRequestForm, db: sqlalchemy.orm.Session 
          raise HTTPException(status_code=400,detail="Invalid Login Credentials")
     
     return '' # Return Access and Refresh Tokens
+
+
+
+
+
+
+secret_key = samplejwtkeygenerator.generatejwtkey()
+
+
+async def create_access_token(payload: dict, exp: datetime.timedelta):
+    payload = payload.copy()
+    tokenTime = datetime.datetime.now() + exp
+    payload.update({"time": tokenTime})
+    token = jwt.encode(payload=payload,key = secret_key, algorithm= ['HS256'] )
+    return token
+
 
 
 
