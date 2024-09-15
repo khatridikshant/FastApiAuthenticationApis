@@ -39,8 +39,8 @@ async def get_allusers(db: Session = Depends(get_db)):
     listitems = []
     for values in dbitems:
         listitems.append({
-            "name": values.first_name + " " + values.last_name,
-            "email": values.email
+            "User-Name": values.first_name + " " + values.last_name,
+            "Email": values.email  
         })
     return listitems
         
