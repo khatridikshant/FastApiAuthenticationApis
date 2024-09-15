@@ -32,7 +32,7 @@ def get_user_details(request: Request):
     return request.user
 
 
-@_userrouter.get("/getall")
+@_userrouter.get("/getall", status_code=status.HTTP_200_OK)
 async def get_allusers(db: Session = Depends(get_db)):
      
     dbitems =  db.query(UserModel).all()
