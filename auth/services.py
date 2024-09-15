@@ -2,6 +2,7 @@ import fastapi
 from fastapi import Depends, HTTPException
 import sqlalchemy
 import sqlalchemy.orm
+from auth.response import TokenResponse
 from db import  get_db
 from user.models import UserModel
 from fastapi.security import OAuth2PasswordRequestForm
@@ -20,7 +21,7 @@ async def get_token(data: OAuth2PasswordRequestForm, db: sqlalchemy.orm.Session 
     if not security.verify_password(data.password,user.password):
          raise HTTPException(status_code=400,detail="Invalid Login Credentials")
     
-    return '' # Return Access and Refresh Tokens
+    return get_user_token()
 
 
 
@@ -41,11 +42,11 @@ async def create_access_token(payload: dict, exp: datetime.timedelta):
 async def create_refresh_token(data: dict):
     return jwt.encode(data,secret_key,["HS256"])
 
-def get_user_token(user: UserModel, refresh_token = None):
+async def get_user_token(user: UserModel, refresh_token = None):
     payload = {"id": user.id, "timeNow": datetime.datetime.now()}
-    access_token = create_access_token(payload,datetime.timedelta(minutes=10))
+    access_token = await create_access_token(payload,datetime.timedelta(minutes=60))
     if not refresh_token:
         refresh_token = create_refresh_token(payload)
-    return ''
+    return TokenResponse(access_token=access_token,refresh_token=refresh_token,expires_in=datetime.timedelta(minutes=60))
 
 
