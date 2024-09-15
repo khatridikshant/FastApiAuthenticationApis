@@ -1,12 +1,12 @@
 import secrets
 import base64
 
-def generatejwtkey():
+async def generatejwtkey():
 
     securestring = secrets.token_bytes(32)
     print(securestring)
     secret_key = securestring.hex()
-    return secret_key
+    return await secret_key
 
 secretkey = generatejwtkey()
 print(secretkey)
