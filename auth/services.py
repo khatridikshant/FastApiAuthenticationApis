@@ -68,7 +68,7 @@ def get_token_payload(token):
 
 
 async def get_refresh_token(token,db: sqlalchemy.orm.Session = Depends(get_db)):
-    payload : dict= get_token_payload(token)
+    payload = get_token_payload(token)
     user_id = payload.get('id', None)
     if not user_id:
         raise HTTPException(status_code=401, detail="Invalid Refresh Token", )
