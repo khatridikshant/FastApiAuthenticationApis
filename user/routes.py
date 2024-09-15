@@ -27,10 +27,25 @@ async def get_users(id: int, db:Session = Depends(get_db)):
     return db_item
 
 
-
 @_userrouter.post("/account", status_code = status.HTTP_200_OK,response_model=UserJwt)
 def get_user_details(request: Request):
     return request.user
+
+
+@_userrouter.get("/getall")
+async def get_allusers(db: Session = Depends(get_db)):
+     
+    dbitems =  db.query(UserModel).all()
+    listitems = []
+    for values in dbitems:
+        listitems.append({
+            "name": values.first_name + " " + values.last_name,
+            "email": values.email
+        })
+    return listitems
+        
+    
+
 
     
 
