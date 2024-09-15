@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlalchemy import Boolean, Column, Integer, String, DateTime
 from db import Base
 
@@ -8,5 +9,13 @@ class UserModel(Base):
     last_name = Column(String(100))
     email = Column(String(250), unique=True, index=True)
     password = Column(String(100))
+
+
+
+class UserJwt(BaseModel):
+    id: int
+    first_name : str
+    last_name : str
+    email :str
 
 

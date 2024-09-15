@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi import HTTPException, Request, status,Depends
 from sqlalchemy.orm import Session
 from db import get_db
-from user.models import UserModel
+from user.models import UserJwt, UserModel
 from user.schemas import CreateUserRequest
 from user.services import create_user_account
 from starlette.middleware.authentication import AuthenticationMiddleware
@@ -28,7 +28,7 @@ async def get_users(id: int, db:Session = Depends(get_db)):
 
 
 
-@_userrouter.post("/account", status_code = status.HTTP_200_OK)
+@_userrouter.post("/account", status_code = status.HTTP_200_OK,response_model=UserJwt)
 def get_user_details(request: Request):
     return request.user
 
