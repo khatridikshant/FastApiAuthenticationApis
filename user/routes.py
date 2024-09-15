@@ -9,6 +9,7 @@ from user.services import create_user_account
 from starlette.middleware.authentication import AuthenticationMiddleware
 
 _router = router.APIRouter(prefix="/users", tags=["User"],responses={404: {"description" : "Not Found"}})
+_userrouter = router.APIRouter(prefix="/users", tags=["User"],responses={404: {"description" : "Not Found"}})
 
 @_router.post("")
 async def create_user(data: CreateUserRequest, db:Session = Depends(get_db)):
