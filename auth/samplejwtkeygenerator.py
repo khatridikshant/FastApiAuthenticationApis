@@ -8,5 +8,5 @@ async def generatejwtkey():
     secret_key = securestring.hex()
     return await secret_key
 
-secretkey = generatejwtkey()
+secretkey = str(generatejwtkey())
 print(secretkey)

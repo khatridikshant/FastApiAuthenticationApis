@@ -32,20 +32,24 @@ async def get_token(data: OAuth2PasswordRequestForm, db: sqlalchemy.orm.Session 
 
 async def create_access_token(payload: dict, exp: datetime.timedelta):
     payload = payload.copy()
-    tokenTime = datetime.datetime.now() + exp
-    payload.update({"time": tokenTime})
-    token = jwt.encode(payload=payload,key = samplejwtkeygenerator.secretkey, algorithm= ['HS256'] )
+    tokenTime = datetime.datetime.now().second + exp
+    payload["time"] = tokenTime
+
+    for key,value in payload.items():
+        if isinstance(value, datetime.datetime):
+            payload[key] = str(value) 
+    token = jwt.encode(payload=payload,key = samplejwtkeygenerator.secretkey, algorithm= 'HS256')
     return token
 
 
 async def create_refresh_token(data: dict):
-    return jwt.encode(data,samplejwtkeygenerator.secretkey,["HS256"])
+    return jwt.encode(data,samplejwtkeygenerator.secretkey,"HS256")
 
 async def get_user_token(user: UserModel, refresh_token = None):
-    payload = {"id": user.id, "timeNow": datetime.datetime.now()}
-    access_token =  await create_access_token(payload,datetime.timedelta(minutes=60))
+    payload = {"id": user.id}
+    access_token =  await create_access_token(payload,datetime.timedelta(minutes=60).seconds)
     if not refresh_token:
         refresh_token = await create_refresh_token(payload)
-    return TokenResponse(access_token=access_token,refresh_token=refresh_token,expires_in=datetime.timedelta(minutes=60))
+    return TokenResponse(access_token=access_token,refresh_token=refresh_token,expires_in=datetime.timedelta(minutes=60).seconds)
 
 
