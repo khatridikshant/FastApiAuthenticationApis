@@ -53,3 +53,32 @@ async def get_user_token(user: UserModel, refresh_token = None):
     return TokenResponse(access_token=access_token,refresh_token=refresh_token,expires_in=datetime.timedelta(minutes=60).seconds)
 
 
+
+async def create_refresh_token(data):
+    return jwt.encode(data, samplejwtkeygenerator.secretkey,"HS256")
+
+
+def get_token_payload(token):
+    try:
+        payload = jwt.decode(token, samplejwtkeygenerator.secretkey, "HS256")
+    except jwt.exceptions.InvalidTokenError:
+        return jwt.exceptions.InvalidTokenError
+    
+    return payload
+
+
+async def get_refresh_token(token,db: sqlalchemy.orm.Session = Depends(get_db)):
+    payload : dict= get_token_payload(token)
+    user_id = payload.get('id', None)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid Refresh Token", )
+    
+    user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=401, detail = "Invalid Refresh Token")
+    
+    return await get_user_token(user,token)
+
+
+
+
